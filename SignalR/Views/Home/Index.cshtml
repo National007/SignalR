@@ -1,0 +1,73 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    <div id="dd"> 
+        
+    </div>
+    <div id="newMessageDIV" style="display:none"></div> 
+
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    <script src="~/Scripts/jquery.signalR-2.2.2.js"></script>
+    <script src="/Signalr/Hubs"></script>
+    @*<script src="/signalr/js"></script>*@
+    <script type="text/javascript">
+        
+
+        $(function () {
+
+            // 引用自动生成的集线器代理
+            var proxy = $.connection.tableService;
+
+            // 定义服务器端调用的客户端displayDatas来显示数据库数据
+            proxy.client.displayDatas = function () {
+                getData();
+            }
+            // 开始连接服务器
+            $.connection.hub.start().done(function () {
+                getData();
+            });
+
+        });
+        var dd;
+        function getData() {
+            $.ajax({
+                type: "Post",
+                url: "/Home/Get",
+                datatype: "json",
+                success: function (data) {
+
+                    console.log(data);
+                    //console.log(d);
+
+                    $("#dd").empty().append(data);
+                    if (data > 1) {
+
+                        if (dd != data) {
+                            play();    //只播放一次
+                            dd = data;
+                        }
+                        //play();
+                    }
+
+
+                }
+            });
+        }
+
+        function play() {
+            $('#newMessageDIV').html('<audio autoplay="autoplay"><source src="/music/8407.wav"'
+                + 'type="audio/wav"/><source src="/music/8407.wav" type="audio/mpeg"/></audio>');
+        }
+    </script>
+</body>
+</html>
